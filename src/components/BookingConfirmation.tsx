@@ -65,23 +65,23 @@ export default function BookingConfirmation({ booking, onReset }: BookingConfirm
           
           {booking.userInfo.notes && (
             <div className="flex flex-col">
-              <span className="text-gray-600 dark:text-gray-400 mb-1">备注：</span>
-              <p className="font-medium text-gray-800 dark:text-white bg-white dark:bg-gray-800 p-2 rounded">
+              <span className="text-gray-600 dark:text-gray-400 mb-1">备注信息：</span>
+              <span className="font-medium text-gray-800 dark:text-white bg-gray-100 dark:bg-gray-600 p-2 rounded">
                 {booking.userInfo.notes}
-              </p>
+              </span>
             </div>
           )}
         </div>
       </div>
       
       <div className="text-center">
-        <p className="text-gray-600 dark:text-gray-300 mb-4">
-          我们已将预约确认信息发送到您的手机，请保持电话畅通。
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+          我们已将预约确认信息发送到您的手机，请留意短信通知。
         </p>
         
         <button
           onClick={onReset}
-          className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           返回首页
         </button>

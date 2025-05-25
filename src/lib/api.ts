@@ -49,28 +49,32 @@ export const getTimeSlotsForDate = async (date: string): Promise<TimeSlot[]> => 
   // 模拟API延迟
   await new Promise(resolve => setTimeout(resolve, 800));
   
-  // 检查日期是否是过去的日期
-  const selectedDate = new Date(date);
-  const today = startOfDay(new Date());
-  
-  if (isBefore(selectedDate, today)) {
-    throw new Error('不能选择过去的日期');
-  }
-  
+  // 模拟从服务器获取时间段
+  // 在实际应用中，这里应该调用后端API
   return generateTimeSlots();
 };
 
 // 创建预约
-export const createBooking = async (booking: Omit<Booking, 'id' | 'createdAt'>): Promise<Booking> => {
+export const createBooking = async (data: {
+  date: string;
+  timeSlot: TimeSlot;
+  userInfo: {
+    name: string;
+    phone: string;
+    alternativeContact?: string;
+    notes?: string;
+  };
+}): Promise<Booking> => {
   // 模拟API延迟
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise(resolve => setTimeout(resolve, 1500));
   
   // 模拟创建预约
-  const newBooking: Booking = {
-    ...booking,
-    id: Math.random().toString(36).substring(2, 9),
-    createdAt: new Date().toISOString()
+  // 在实际应用中，这里应该调用后端API
+  return {
+    id: Math.random().toString(36).substring(2, 10).toUpperCase(),
+    date: data.date,
+    timeSlot: data.timeSlot,
+    userInfo: data.userInfo,
+    createdAt: new Date().toISOString(),
   };
-  
-  return newBooking;
 };
