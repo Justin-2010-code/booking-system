@@ -48,7 +48,6 @@ export default function Home() {
         userInfo,
       });
 
-      // 显示预约确认
       setBookingConfirmation(booking);
     } catch (err) {
       setError(err instanceof Error ? err.message : '预约提交失败，请稍后重试');
@@ -66,29 +65,22 @@ export default function Home() {
     setError(null);
   };
 
-  // 如果有预约确认，显示确认页面
+  // 如果有预约确认信息，显示确认页面
   if (bookingConfirmation) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-        <BookingConfirmation booking={bookingConfirmation} onReset={handleReset} />
-      </div>
-    );
+    return <BookingConfirmation booking={bookingConfirmation} onReset={handleReset} />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">在线预约系统</h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-300">选择日期和时间，填写信息即可完成预约</p>
-        </div>
-
+    <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
+      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
+        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-white">在线预约系统</h1>
+        
         {error && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-            <p className="text-red-600 dark:text-red-400">{error}</p>
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span className="block sm:inline">{error}</span>
           </div>
         )}
-
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             {/* 日期选择器 */}
@@ -96,51 +88,46 @@ export default function Home() {
               onSelectDate={handleDateSelect} 
               selectedDate={selectedDate} 
             />
-
+            
             {/* 时间段选择器 */}
-            <TimeSlotPicker 
-              selectedDate={formattedDate} 
-              onSelectTimeSlot={handleTimeSlotSelect} 
-              selectedTimeSlot={selectedTimeSlot} 
-            />
+            {formattedDate && (
+              <TimeSlotPicker 
+                selectedDate={formattedDate}
+                onSelectTimeSlot={handleTimeSlotSelect}
+                selectedTimeSlot={selectedTimeSlot}
+              />
+            )}
           </div>
-
+          
           <div>
             {/* 用户信息表单 */}
-            <UserInfoForm 
-              onSubmit={handleFormSubmit} 
-              isSubmitting={isSubmitting} 
-            />
-
-            {/* 预约摘要 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-              <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">预约摘要</h2>
-              
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">日期：</span>
-                  <span className="font-medium text-gray-800 dark:text-white">
-                    {selectedDate ? format(selectedDate, 'yyyy年MM月dd日') : '未选择'}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">时间段：</span>
-                  <span className="font-medium text-gray-800 dark:text-white">
-                    {selectedTimeSlot ? `${selectedTimeSlot.startTime} - ${selectedTimeSlot.endTime}` : '未选择'}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  请确保选择了日期和时间段，并填写了必要的个人信息后再提交预约。
-                </p>
-              </div>
+              <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">填写预约信息</h2>
+              <UserInfoForm 
+                onSubmit={handleFormSubmit}
+                isSubmitting={isSubmitting}
+              />
             </div>
+            
+            {/* 预约摘要 */}
+            {formattedDate && selectedTimeSlot && (
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mt-6">
+                <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">预约摘要</h2>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">日期:</span>
+                    <span className="font-medium">{format(new Date(formattedDate), 'yyyy年MM月dd日')}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">时间:</span>
+                    <span className="font-medium">{selectedTimeSlot.startTime} - {selectedTimeSlot.endTime}</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
