@@ -48,127 +48,106 @@ export default function UserInfoForm({ onSubmit, isSubmitting }: UserInfoFormPro
   // 监听手机号输入，自动格式化
   const phoneValue = watch('phone');
   
-  // 处理手机号格式化
-  const formatPhoneNumber = (value: string) => {
-    // 移除所有非数字字符
-    const digits = value.replace(/\D/g, '');
-    
-    if (digits.length <= 3) {
-      return digits;
-    } else if (digits.length <= 7) {
-      return `${digits.slice(0, 3)}-${digits.slice(3)}`;
-    } else {
-      return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`;
-    }
-  };
-
   // 处理表单提交
-  const handleFormSubmit = (data: UserInfoFormData) => {
-    onSubmit(data);
+  const onSubmitForm = (data: UserInfoFormData) => {
+    // 格式化手机号
+    const formattedPhone = data.phone.replace(/-/g, '');
+    const phone = `${formattedPhone.slice(0, 3)}-${formattedPhone.slice(3, 7)}-${formattedPhone.slice(7)}`;
+    
+    onSubmit({
+      ...data,
+      phone,
+    });
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
-      <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">填写个人信息</h2>
-      
-      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-        {/* 姓名字段 */}
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            姓名 <span className="text-red-500">*</span>
-          </label>
-          <input
-            id="name"
-            type="text"
-            {...register('name')}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`}
-            placeholder="请输入您的姓名"
-            aria-invalid={errors.name ? 'true' : 'false'}
-          />
-          {errors.name && (
-            <p className="mt-1 text-sm text-red-500" role="alert">{errors.name.message}</p>
-          )}
-        </div>
+    <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
+      {/* 姓名 */}
+      <div>
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          姓名 <span className="text-red-500">*</span>
+        </label>
+        <input
+          id="name"
+          type="text"
+          {...register('name')}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          placeholder="请输入您的姓名"
+        />
+        {errors.name && (
+          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+        )}
+      </div>
 
-        {/* 手机号字段 */}
-        <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            手机号 <span className="text-red-500">*</span>
-          </label>
-          <input
-            id="phone"
-            type="tel"
-            {...register('phone')}
-            onChange={(e) => {
-              const formatted = formatPhoneNumber(e.target.value);
-              e.target.value = formatted;
-            }}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.phone ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`}
-            placeholder="例如：138-1234-5678"
-            aria-invalid={errors.phone ? 'true' : 'false'}
-          />
-          {errors.phone && (
-            <p className="mt-1 text-sm text-red-500" role="alert">{errors.phone.message}</p>
-          )}
-        </div>
+      {/* 手机号 */}
+      <div>
+        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          手机号码 <span className="text-red-500">*</span>
+        </label>
+        <input
+          id="phone"
+          type="tel"
+          {...register('phone')}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          placeholder="请输入您的手机号码"
+        />
+        {errors.phone && (
+          <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
+        )}
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          格式：XXX-XXXX-XXXX，例如：138-1234-5678
+        </p>
+      </div>
 
-        {/* 备用联系方式字段 */}
-        <div>
-          <label htmlFor="alternativeContact" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            备用联系方式（选填）
-          </label>
-          <input
-            id="alternativeContact"
-            type="text"
-            {...register('alternativeContact')}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            placeholder="微信号或邮箱"
-          />
-          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">可填写微信号或邮箱地址</p>
-        </div>
+      {/* 备用联系方式 */}
+      <div>
+        <label htmlFor="alternativeContact" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          备用联系方式
+        </label>
+        <input
+          id="alternativeContact"
+          type="text"
+          {...register('alternativeContact')}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          placeholder="可选，如微信、邮箱等"
+        />
+      </div>
 
-        {/* 咨询备注字段 */}
-        <div>
-          <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            咨询备注（选填）
-          </label>
-          <textarea
-            id="notes"
-            {...register('notes')}
-            rows={4}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.notes ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`}
-            placeholder="请输入您的咨询内容或特殊需求"
-          />
-          <div className="flex justify-between mt-1">
-            <p className="text-xs text-gray-500 dark:text-gray-400">最多500字</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              {watch('notes')?.length || 0}/500
-            </p>
-          </div>
-          {errors.notes && (
-            <p className="mt-1 text-sm text-red-500" role="alert">{errors.notes.message}</p>
-          )}
-        </div>
+      {/* 备注 */}
+      <div>
+        <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          备注信息
+        </label>
+        <textarea
+          id="notes"
+          {...register('notes')}
+          rows={3}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          placeholder="可选，如有特殊需求请在此说明"
+        />
+        {errors.notes && (
+          <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>
+        )}
+      </div>
 
-        {/* 提交按钮 */}
-        <div className="pt-2">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`w-full py-2 px-4 rounded-md text-white font-medium transition-colors ${isSubmitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
-          >
-            {isSubmitting ? (
-              <span className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                提交中...
-              </span>
-            ) : '提交预约'}
-          </button>
-        </div>
-      </form>
-    </div>
+      {/* 提交按钮 */}
+      <div className="pt-2">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+        >
+          {isSubmitting ? (
+            <>
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              提交中...
+            </>
+          ) : '提交预约'}
+        </button>
+      </div>
+    </form>
   );
 }

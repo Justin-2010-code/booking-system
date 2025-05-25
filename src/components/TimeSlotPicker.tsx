@@ -50,74 +50,60 @@ export default function TimeSlotPicker({
   }, [selectedDate, onSelectTimeSlot, selectedTimeSlot]);
 
   // 处理时间段选择
-  const handleTimeSlotClick = (timeSlot: TimeSlot) => {
-    if (!timeSlot.isBooked) {
-      onSelectTimeSlot(timeSlot);
-    }
+  const handleTimeSlotSelect = (timeSlot: TimeSlot) => {
+    onSelectTimeSlot(timeSlot);
   };
 
+  // 如果没有选择日期，不显示时间段选择器
   if (!selectedDate) {
-    return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
-        <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">选择时间段</h2>
-        <p className="text-gray-500 dark:text-gray-400">请先选择日期</p>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
-        <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">选择时间段</h2>
-        <div className="flex justify-center items-center h-40">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
-        <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">选择时间段</h2>
-        <div className="text-red-500 p-4 rounded-md bg-red-50 dark:bg-red-900/20">
-          <p>{error}</p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
       <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">选择时间段</h2>
       
-      {timeSlots.length === 0 ? (
-        <p className="text-gray-500 dark:text-gray-400">当天没有可用的时间段</p>
+      {loading ? (
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <span className="ml-2 text-gray-600 dark:text-gray-300">加载中...</span>
+        </div>
+      ) : error ? (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <span className="block sm:inline">{error}</span>
+        </div>
+      ) : timeSlots.length === 0 ? (
+        <div className="text-center py-8 text-gray-600 dark:text-gray-300">
+          当前日期没有可用的时间段
+        </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {timeSlots.map((slot) => (
             <button
               key={slot.id}
-              onClick={() => handleTimeSlotClick(slot)}
+              onClick={() => handleTimeSlotSelect(slot)}
               disabled={slot.isBooked}
               className={`
-                py-2 px-3 rounded-md text-sm font-medium transition-colors
+                py-3 px-4 rounded-md text-sm font-medium transition-colors
                 ${slot.isBooked 
-                  ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 cursor-not-allowed' 
+                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
                   : selectedTimeSlot?.id === slot.id
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
                 }
               `}
             >
               {slot.startTime} - {slot.endTime}
+              {slot.isBooked && (
+                <span className="block text-xs mt-1 text-red-500">已预约</span>
+              )}
             </button>
           ))}
         </div>
       )}
       
       <div className="mt-4 text-sm text-gray-600 dark:text-gray-300">
-        <p>• 红色时间段表示已被预约</p>
+        <p>• 灰色时间段表示已被预约</p>
         <p>• 蓝色背景表示当前选中时间段</p>
       </div>
     </div>
