@@ -14,10 +14,27 @@
    - 选填字段（备用联系方式、咨询备注）
    - 智能验证功能
 
+## 技术栈
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+
 ## 本地运行
 
 ```bash
 npm run dev
+# 或
+yarn dev
+# 或
+pnpm dev
+# 或
+bun dev
 ```
 
-访问 http://localhost:3000 查看应用。
+访问 [http://localhost:3000](http://localhost:3000) 查看应用。
+
+---
+
+这是一个使用 [Next.js](https://nextjs.org) 创建的项目，通过 [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) 引导。
